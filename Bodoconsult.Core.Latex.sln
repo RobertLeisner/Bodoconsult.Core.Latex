@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.31205.134
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Bodoconsult.Core.Latex", "Bodoconsult.Core.Latex\Bodoconsult.Core.Latex.csproj", "{570993E3-CBBE-4438-8BCF-703E1C47AB6E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Bodoconsult.Core.Latex.Test", "Bodoconsult.Core.Latex.Test\Bodoconsult.Core.Latex.Test.csproj", "{B99E52FB-7479-4591-92EA-9DFF3ADCD3FF}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{570993E3-CBBE-4438-8BCF-703E1C47AB6E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{570993E3-CBBE-4438-8BCF-703E1C47AB6E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{570993E3-CBBE-4438-8BCF-703E1C47AB6E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{570993E3-CBBE-4438-8BCF-703E1C47AB6E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B99E52FB-7479-4591-92EA-9DFF3ADCD3FF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B99E52FB-7479-4591-92EA-9DFF3ADCD3FF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B99E52FB-7479-4591-92EA-9DFF3ADCD3FF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B99E52FB-7479-4591-92EA-9DFF3ADCD3FF}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {24654F0A-AFB1-46B2-8D6B-7D5783A694BA}
+	EndGlobalSection
+EndGlobal
