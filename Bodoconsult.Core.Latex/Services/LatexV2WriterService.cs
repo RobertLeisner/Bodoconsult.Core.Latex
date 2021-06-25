@@ -11,6 +11,7 @@ using System.Text;
 using Bodoconsult.Core.Latex.Enums;
 using Bodoconsult.Core.Latex.Helpers;
 using Bodoconsult.Core.Latex.Interfaces;
+using DocumentFormat.OpenXml.Drawing.Diagrams;
 
 namespace Bodoconsult.Core.Latex.Services
 {
@@ -81,7 +82,8 @@ namespace Bodoconsult.Core.Latex.Services
         /// <param name="section">Section data</param>
         public void AddSection(ILaTexTextItem section)
         {
-            WriteWithIndent($@"\section{{{LaTexHelper.Escape(section.Text)}}}", section.IndentLevel);
+            var s = LaTexHelper.Escape(section.Text);
+            WriteWithIndent($@"\section[{s}]{{{s}}}", section.IndentLevel);
             _content.AppendLine("");
         }
 
@@ -92,7 +94,8 @@ namespace Bodoconsult.Core.Latex.Services
         /// <param name="section">Section data</param>
         public void AddSubSection(ILaTexTextItem section)
         {
-            WriteWithIndent($@"\subsection{{{LaTexHelper.Escape(section.Text)}}}", section.IndentLevel);
+            var s = LaTexHelper.Escape(section.Text);
+            WriteWithIndent($@"\subsection[{s}]{{{s}}}", section.IndentLevel);
             _content.AppendLine("");
         }
 
@@ -103,7 +106,10 @@ namespace Bodoconsult.Core.Latex.Services
         /// <param name="section">Sub sub section data</param>
         public void AddSubSubSection(ILaTexTextItem section)
         {
-            WriteWithIndent($@"\subsubsection{{{LaTexHelper.Escape(section.Text)}}}", section.IndentLevel);
+
+            var s = LaTexHelper.Escape(section.Text);
+
+            WriteWithIndent($@"\subsubsection[{s}]{{{s}}}", section.IndentLevel);
             _content.AppendLine("");
         }
 
@@ -234,10 +240,10 @@ namespace Bodoconsult.Core.Latex.Services
             var ext = imageItem.ImageType == LaTexImageType.Png ? "png" : "jpg";
 
             var imageFilename = $"{_imageName}{_imageCounter}.{ext}";
-            
+
             var target = Path.Combine(ImageDirectory, imageFilename);
 
-            
+
             try
             {
 
@@ -334,30 +340,38 @@ namespace Bodoconsult.Core.Latex.Services
 
         public void AddTable(ILaTexTableItem item)
         {
+            var max0 = item.TableData.GetLength(0) - 1;
+            var max1 = item.TableData.GetLength(1) - 1;
 
-            _content.AppendLine(@"\begin{tabular}[t]{rl}");
+            _content.AppendLine($@"\begin{{tabular}}[h]{{{new string('l', max0)}}}");
             _content.AppendLine(@"\toprule");
 
-            var max0 = item.TableData.GetLength(0)-1;
-            var max1 = item.TableData.GetLength(1)-1;
+            _content.Append($@"\midrule{Environment.NewLine}");
+
 
             // ToDo: implement it
             for (var rowIndex = 0; rowIndex <= max0; rowIndex++)
             {
-                _content.Append($@"\midrule{Environment.NewLine}");
+
+                var s = new StringBuilder();
 
                 for (var colIndex = 0; colIndex <= max1; colIndex++)
                 {
-
-                    _content.Append(LaTexHelper.Escape(item.TableData.GetValue(rowIndex, colIndex).ToString()));
+                    var content = LaTexHelper.Escape(item.TableData.GetValue(rowIndex, colIndex).ToString());
+                    s.Append(content);
 
                     if (colIndex != max1)
                     {
-                        _content.Append(" $ ");
+                        s.Append(" & ");
                     }
                 }
 
-                _content.Append(Environment.NewLine);
+                s.Append($@" \\ {Environment.NewLine}");
+
+                Debug.Print(s.ToString());
+
+                _content.Append(s);
+
             }
 
             _content.AppendLine(@"\bottomrule");

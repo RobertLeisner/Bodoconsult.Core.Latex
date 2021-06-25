@@ -231,6 +231,8 @@ namespace Bodoconsult.Core.Latex.Office.Analyzer
             {
                 try
                 {
+
+                    
                     //Extract correct image part and extenion
                     var imagePart = ExtractImage(pic, slide, out var extension);
 
@@ -252,13 +254,16 @@ namespace Bodoconsult.Core.Latex.Office.Analyzer
             //Get all the images!!! 
             foreach (var table in slide.Slide.Descendants<Table>())
             {
+
+
+
                 var grid = table.TableGrid;
 
-                var rows = table.Elements<TableRow>();
+                var rows = table.Elements<TableRow>().ToList();
 
-                var cols = grid.Elements<GridColumn>();
+                var cols = grid.Elements<GridColumn>().ToList();
 
-                var data = new string[rows.Count(), cols.Count()];
+                var data = new string[rows.Count, cols.Count];
 
                 var rowIndex = 0;
                 foreach (var row in rows)

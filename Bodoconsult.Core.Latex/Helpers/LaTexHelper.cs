@@ -13,7 +13,15 @@
         /// <returns></returns>
         public static string Escape(string input)
         {
-            return string.IsNullOrEmpty(input) ? "" : input.Replace("&", "\\&");
+            return string.IsNullOrEmpty(input) ? "" 
+                : input.Replace("&", "\\&")
+                    .Replace("Ü", "\\\"U")
+                    .Replace("Ä", "\\\"A")
+                    .Replace("Ö", "\\\"O")
+                    .Replace("ü", "\\\"u")
+                    .Replace("ä", "\\\"a")
+                    .Replace("ö", "\\\"o")
+                    .Replace("ß", "{\\ss}");
         }
 
 

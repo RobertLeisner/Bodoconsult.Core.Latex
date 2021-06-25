@@ -25,7 +25,7 @@ namespace Bodoconsult.Core.Latex.Test.Helpers
         /// <summary>
         /// Folder to save test output temporarily
         /// </summary>
-        public static string TempPath => @"C:\Royotech\Temp";
+        public static string TempPath => @"D:\temp\Latex";
 
 
         /// <summary>
@@ -185,10 +185,13 @@ namespace Bodoconsult.Core.Latex.Test.Helpers
             foreach (var p in paragraphs)
             {
 
-                Debug.Print(indent + p.Text);
+                
 
                 if (p is ILaTexTextItem paragraph)
                 {
+
+                    Debug.Print(indent + p.Text);
+
                     PrintParagraphs(paragraph.SubItems, indent + "    ");
                 }
 
@@ -206,6 +209,8 @@ namespace Bodoconsult.Core.Latex.Test.Helpers
 
                     for (var rowIndex = 0; rowIndex <= max0; rowIndex++)
                     {
+                        Debug.Print($"TableRow {rowIndex}");
+
                         for (var colIndex = 0; colIndex <= max1; colIndex++)
                         {
                             Debug.Print($"{indent}{tableItem.TableData[rowIndex, colIndex]}  ");
