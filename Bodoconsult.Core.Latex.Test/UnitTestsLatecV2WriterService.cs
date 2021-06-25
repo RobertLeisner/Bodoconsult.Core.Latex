@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -10,6 +11,7 @@ using NUnit.Framework;
 
 namespace Bodoconsult.Core.Latex.Test
 {
+    [TestFixture]
     public class UnitTestsLatecV2WriterService
     {
 
@@ -40,6 +42,7 @@ namespace Bodoconsult.Core.Latex.Test
             // Assert
             Assert.IsNotNull(_service.FileName);
             Assert.IsNotNull(_service.LatexDirectory);
+            Assert.IsNotNull(_service.ImageDirectory);
             Assert.IsTrue(string.IsNullOrEmpty(_service.Content));
         }
 
@@ -407,7 +410,7 @@ namespace Bodoconsult.Core.Latex.Test
             Debug.Print(content);
 
             StringAssert.Contains(@"\begin{figure}", content);
-            StringAssert.Contains("\\includegraphics[width=0.5\\textwidth]{", content);
+            StringAssert.Contains("\\includegraphics[width=\\textwidth]{", content);
             StringAssert.Contains(@"\end{figure}", content);
 
             FileAssert.Exists(fileName);
@@ -493,6 +496,40 @@ namespace Bodoconsult.Core.Latex.Test
             StringAssert.Contains("Carrot", content);
             StringAssert.Contains("Pepper", content);
             StringAssert.Contains("Cauliflower", content);
+        }
+
+        [Test]
+        public void TestAddTable()
+        {
+
+            // Arrange
+            const string testValue1 = "Test";
+            const string testValue2 = "Blubb";
+            const string testValue3 = "Blabb";
+            const string testValue4 = "Blobb";
+
+
+            var tableItem = new LaTextTableItem
+            {
+                TableData = new[,] {{testValue1, testValue2}, {testValue3, testValue4}}
+            };
+
+            // Act
+            _service.AddTable(tableItem);
+
+            // Assert
+            Debug.Print(_service.Content);
+
+            Assert.IsTrue(_service.Content.Contains(testValue1));
+            Assert.IsTrue(_service.Content.Contains(testValue2));
+            Assert.IsTrue(_service.Content.Contains(testValue3));
+            Assert.IsTrue(_service.Content.Contains(testValue4));
+
+            StringAssert.Contains(@"\begin{tabular}[t]{rl}", _service.Content);
+            StringAssert.Contains(@"\end{tabular}", _service.Content);
+            StringAssert.Contains(@"\toprule", _service.Content);
+            StringAssert.Contains(@"\midrule", _service.Content);
+            StringAssert.Contains(@"\bottomrule", _service.Content);
         }
 
     }

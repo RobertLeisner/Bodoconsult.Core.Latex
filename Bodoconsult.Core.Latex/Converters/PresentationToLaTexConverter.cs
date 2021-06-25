@@ -21,7 +21,8 @@ namespace Bodoconsult.Core.Latex.Converters
         /// </summary>
         /// <param name="analyzer">Current <see cref="IPresentationAnalyzer"/> implementation</param>
         /// <param name="laTexWriter">Current LaText writer service</param>
-        public PresentationToLaTexConverter(IPresentationAnalyzer analyzer, ILatexWriterService laTexWriter)
+        public PresentationToLaTexConverter(IPresentationAnalyzer analyzer, 
+            ILatexWriterService laTexWriter)
         {
             Analyzer = analyzer;
             Presentation = analyzer.PresentationMetaData;
@@ -30,17 +31,19 @@ namespace Bodoconsult.Core.Latex.Converters
             _isSection = Presentation.Slides.Any(x => x.SlideType == SlideType.Section);
         }
 
-
-
-
+        /// <summary>
+        /// Current presentation
+        /// </summary>
         public PresentationMetaData Presentation { get; }
 
-
-
+        /// <summary>
+        /// The current LaTex writer service to use for conversion
+        /// </summary>
         public ILatexWriterService LaTexWriterService { get; }
 
-
-
+        /// <summary>
+        /// Current presentation analyzer
+        /// </summary>
         public IPresentationAnalyzer Analyzer { get; }
 
         /// <summary>
@@ -145,7 +148,12 @@ namespace Bodoconsult.Core.Latex.Converters
             }
 
             // All tables
+            IList<ILaTexTableItem> tables = items.OfType<ILaTexTableItem>().ToList();
 
+            foreach (var table in tables)
+            {
+                LaTexWriterService.AddTable(table);
+            }
 
         }
     }

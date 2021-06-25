@@ -18,6 +18,11 @@ namespace Bodoconsult.Core.Latex.Interfaces
         /// </summary>
         string LatexDirectory { get; }
 
+        /// <summary>
+        /// Current image directory for LaTex output
+        /// </summary>
+        string ImageDirectory { get; }
+
 
         /// <summary>
         /// Get the current file name of the LaTex file
@@ -97,6 +102,10 @@ namespace Bodoconsult.Core.Latex.Interfaces
         /// </summary>
         void Save();
 
-
+        /// <summary>
+        /// Add a table to the LaTex output
+        /// </summary>
+        /// <param name="data">Table data</param>
+        void AddTable(ILaTexTableItem data);
     }
 }

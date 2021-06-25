@@ -2,7 +2,9 @@
 
 // Based on https://github.com/timdams/Pptx2Tex/blob/master/PPT_To_Latex/Program.cs
 
+using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -177,7 +179,7 @@ namespace Bodoconsult.Core.Latex.Services
 
 
         /// <summary>
-        /// Adds a numbered list of items to output file (LaTex: itemize) with indent level 0
+        /// Adds a numbered list of items to output file (LaTex: enumerate) with indent level 0
         /// </summary>
         /// <param name="items">Items to write as list</param>
         public void AddNumberedList(IList<ILaTexItem> items)
@@ -189,7 +191,7 @@ namespace Bodoconsult.Core.Latex.Services
 
 
         /// <summary>
-        /// Adds a numbered list of items to output file (LaTex: itemize)
+        /// Adds a numbered list of items to output file (LaTex: enumerate)
         /// </summary>
         /// <param name="items">Items to write as list</param>
         /// <param name="indentLevel">Indent level</param>
@@ -330,6 +332,36 @@ namespace Bodoconsult.Core.Latex.Services
         }
 
 
+        public void AddTable(ILaTexTableItem item)
+        {
 
+            _content.AppendLine(@"\begin{tabular}[t]{rl}");
+            _content.AppendLine(@"\toprule");
+
+            var max0 = item.TableData.GetLength(0)-1;
+            var max1 = item.TableData.GetLength(1)-1;
+
+            // ToDo: implement it
+            for (var rowIndex = 0; rowIndex <= max0; rowIndex++)
+            {
+                _content.Append($@"\midrule{Environment.NewLine}");
+
+                for (var colIndex = 0; colIndex <= max1; colIndex++)
+                {
+
+                    _content.Append(LaTexHelper.Escape(item.TableData.GetValue(rowIndex, colIndex).ToString()));
+
+                    if (colIndex != max1)
+                    {
+                        _content.Append(" $ ");
+                    }
+                }
+
+                _content.Append(Environment.NewLine);
+            }
+
+            _content.AppendLine(@"\bottomrule");
+            _content.AppendLine(@"\end{tabular}");
+        }
     }
 }

@@ -25,7 +25,7 @@ namespace Bodoconsult.Core.Latex.Test.Helpers
         /// <summary>
         /// Folder to save test output temporarily
         /// </summary>
-        public static string TempPath => @"D:\Temp\Latex";
+        public static string TempPath => @"C:\Royotech\Temp";
 
 
         /// <summary>
@@ -167,7 +167,8 @@ namespace Bodoconsult.Core.Latex.Test.Helpers
         public static void PrintPresentation(PresentationMetaData presentation)
         {
             foreach (var slide in presentation.Slides)
-            {
+            { 
+
 
                 Debug.Print(slide.Title);
 
@@ -191,6 +192,28 @@ namespace Bodoconsult.Core.Latex.Test.Helpers
                     PrintParagraphs(paragraph.SubItems, indent + "    ");
                 }
 
+                if (p is ILaTexImageItem imageItem)
+                {
+                    Debug.Print($"{indent}<Image>");
+                }
+
+
+                if (p is ILaTexTableItem tableItem)
+                {
+                    var max0 = tableItem.TableData.GetLength(0) - 1;
+                    var max1 = tableItem.TableData.GetLength(1) - 1;
+
+
+                    for (var rowIndex = 0; rowIndex <= max0; rowIndex++)
+                    {
+                        for (var colIndex = 0; colIndex <= max1; colIndex++)
+                        {
+                            Debug.Print($"{indent}{tableItem.TableData[rowIndex, colIndex]}  ");
+                        }
+                    }
+
+
+                }
 
             }
 

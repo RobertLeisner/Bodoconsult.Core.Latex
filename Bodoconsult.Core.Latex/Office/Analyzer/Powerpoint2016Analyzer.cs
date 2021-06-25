@@ -20,11 +20,11 @@ namespace Bodoconsult.Core.Latex.Office.Analyzer
     /// </summary>
     public class Powerpoint2016Analyzer : IPresentationAnalyzer
     {
-        private PresentationDocument presentationDocument;
+        private readonly PresentationDocument _presentationDocument;
 
-        private PresentationPart presentationPart;
+        private readonly PresentationPart _presentationPart;
 
-        private Presentation presentation;
+        private readonly Presentation _presentation;
 
         private readonly PresentationMetaData _presentationMetaData;
 
@@ -36,10 +36,10 @@ namespace Bodoconsult.Core.Latex.Office.Analyzer
         {
             _presentationMetaData = new PresentationMetaData(sourceFileName);
 
-            presentationDocument = PresentationDocument.Open(sourceFileName, false);
+            _presentationDocument = PresentationDocument.Open(sourceFileName, false);
 
-            presentationPart = presentationDocument.PresentationPart;
-            presentation = presentationPart.Presentation;
+            _presentationPart = _presentationDocument.PresentationPart;
+            _presentation = _presentationPart.Presentation;
 
         }
 
@@ -54,7 +54,7 @@ namespace Bodoconsult.Core.Latex.Office.Analyzer
         public PresentationMetaData Analyse()
         {
 
-            foreach (SlideId slideId in presentation.SlideIdList)
+            foreach (SlideId slideId in _presentation.SlideIdList)
             {
                 AnalyseSlide(slideId);
             }
@@ -77,7 +77,7 @@ namespace Bodoconsult.Core.Latex.Office.Analyzer
                 return;
             }
 
-            var slide = (SlidePart)presentationPart.GetPartById(relId);
+            var slide = (SlidePart)_presentationPart.GetPartById(relId);
 
             if (!IncludeHiddenSlides) //check if we got hidden slide, of so, skip
             {
@@ -229,8 +229,8 @@ namespace Bodoconsult.Core.Latex.Office.Analyzer
             //Get all the images!!! 
             foreach (var pic in slide.Slide.Descendants< DocumentFormat.OpenXml.Presentation.Picture >())
             {
-                //try
-                //{
+                try
+                {
                     //Extract correct image part and extenion
                     var imagePart = ExtractImage(pic, slide, out var extension);
 
@@ -240,43 +240,81 @@ namespace Bodoconsult.Core.Latex.Office.Analyzer
                         ImageType = extension == "png" ? LaTexImageType.Png : LaTexImageType.Jpg,
                     };
 
-                    //switch (extension.ToLower())
-                    //{
-                    //    case "png":
-                    //        imageItem.ImageType = LaTexImageType.Png;
-                    //        break;
-                    //    default:
-                    //        imageItem.ImageType = LaTexImageType.Jpg;
-                    //        break;
-                    //}
-
                     slideMetaData.Items.Add(imageItem);
-                //}
-                //catch (Exception ex)
-                //{
-                //    Console.WriteLine("Error with an image");
-                //}
+
+                }
+                catch 
+                {
+                    Console.WriteLine("Error with an image");
+                }
             }
 
-            //if (firstitemdone == true)
-            //{
-            //    fileresult.WriteLine(@"\end{itemize}");
-            //}
-
-
-        }
-
-        private void PrintParents(OpenXmlElement paragraphParent)
-        {
-            if (paragraphParent == null)
+            //Get all the images!!! 
+            foreach (var table in slide.Slide.Descendants<Table>())
             {
-                return;
+                var grid = table.TableGrid;
+
+                var rows = table.Elements<TableRow>();
+
+                var cols = grid.Elements<GridColumn>();
+
+                var data = new string[rows.Count(), cols.Count()];
+
+                var rowIndex = 0;
+                foreach (var row in rows)
+                {
+
+                    var colIndex = 0;
+
+                    var cells = row.Elements<TableCell>();
+
+                    foreach (var cell in cells)
+                    {
+
+                        var paragraphText = new StringBuilder();
+
+                        var paras = cell.TextBody.Descendants<Paragraph>();
+                        foreach (var para in paras)
+                        {
+                            
+                            // Iterate through the lines of the paragraph.
+                            foreach (var text in para.Descendants<DocumentFormat.OpenXml.Drawing.Text>())
+                            {
+                                paragraphText.Append(text.Text);
+                            }
+
+                            paragraphText.Append(Environment.NewLine);
+                        }
+
+                        data[rowIndex, colIndex] = paragraphText.ToString();
+
+                        colIndex++;
+                    }
+
+                    rowIndex++;
+                }
+
+                var tableItem = new LaTextTableItem
+                {
+                    TableData = data
+                };
+
+                slideMetaData.Items.Add(tableItem);
+
             }
-
-            Debug.Print(paragraphParent.LocalName);
-
-            PrintParents(paragraphParent.Parent);
         }
+
+        //private void PrintParents(OpenXmlElement paragraphParent)
+        //{
+        //    if (paragraphParent == null)
+        //    {
+        //        return;
+        //    }
+
+        //    Debug.Print(paragraphParent.LocalName);
+
+        //    PrintParents(paragraphParent.Parent);
+        //}
 
         private bool IsInTable(OpenXmlElement paragraphParent)
         {
@@ -363,7 +401,7 @@ namespace Bodoconsult.Core.Latex.Office.Analyzer
 
         public void Dispose()
         {
-            presentationDocument?.Dispose();
+            _presentationDocument?.Dispose();
         }
     }
 }
