@@ -89,7 +89,7 @@ namespace Bodoconsult.Core.Latex.Converters
 
         private void CreateSectionSlide(SlideMetaData slide)
         {
-            var p = new ParagraphItem
+            var p = new LaTexParagraphItem
             {
                 Text = slide.Title
             };
@@ -100,7 +100,7 @@ namespace Bodoconsult.Core.Latex.Converters
 
         private void CreateContentSlide(SlideMetaData slide)
         {
-            var p = new ParagraphItem
+            var p = new LaTexParagraphItem
             {
                 Text = slide.Title
             };
@@ -120,7 +120,7 @@ namespace Bodoconsult.Core.Latex.Converters
         private void CreateTitleSlide(SlideMetaData slide)
         {
 
-            var p = new ParagraphItem
+            var p = new LaTexParagraphItem
             {
                 Text = slide.Title
             };
@@ -131,29 +131,55 @@ namespace Bodoconsult.Core.Latex.Converters
 
         private void CreateSubItems(IList<ILaTexItem> items)
         {
-            // All paragraphs
-            IList<ILaTexItem> p = items.OfType<ILaTexTextItem>().OfType<ILaTexItem>().ToList();
 
-            if (p.Any())
+            var sorteditems = items.OrderBy(x => x.ShapePosition).ThenBy(x => x.SortId);
+
+            foreach (var item in sorteditems)
             {
-                LaTexWriterService.AddParagraph(p);
+
+                if (item is ILaTexTextItem textItem)
+                {
+                    LaTexWriterService.AddParagraph((ILaTexItem)textItem);
+                }
+
+                if (item is ILaTexImageItem imageItem)
+                {
+                    LaTexWriterService.AddImage(imageItem);
+                }
+
+
+                if (item is ILaTexTableItem tableItem)
+                {
+                    LaTexWriterService.AddTable(tableItem);
+                }
+
             }
 
-            // All images
-            IList<ILaTexImageItem> images = items.OfType<ILaTexImageItem>().ToList();
 
-            foreach (var image in images)
-            {
-                LaTexWriterService.AddImage(image);
-            }
+            //// All paragraphs
 
-            // All tables
-            IList<ILaTexTableItem> tables = items.OfType<ILaTexTableItem>().ToList();
+            //IList<ILaTexItem> p = items.OfType<ILaTexTextItem>().OfType<ILaTexItem>().ToList();
 
-            foreach (var table in tables)
-            {
-                LaTexWriterService.AddTable(table);
-            }
+            //if (p.Any())
+            //{
+                
+            //}
+
+            //// All images
+            //IList<ILaTexImageItem> images = items.OfType<ILaTexImageItem>().ToList();
+
+            //foreach (var image in images)
+            //{
+            //    LaTexWriterService.AddImage(image);
+            //}
+
+            //// All tables
+            //IList<ILaTexTableItem> tables = items.OfType<ILaTexTableItem>().ToList();
+
+            //foreach (var table in tables)
+            //{
+            //    LaTexWriterService.AddTable(table);
+            //}
 
         }
     }

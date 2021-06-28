@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using Bodoconsult.Core.Latex.Enums;
 using Bodoconsult.Core.Latex.Interfaces;
 using Bodoconsult.Core.Latex.Model;
@@ -113,13 +114,13 @@ namespace Bodoconsult.Core.Latex.Test.Helpers
                 Title = title
             };
 
-            var p = new ParagraphItem { Text = "Apple" };
+            var p = new LaTexParagraphItem { Text = "Apple" };
             slide.Items.Add(p);
 
-            p = new ParagraphItem { Text = "Banana" };
+            p = new LaTexParagraphItem { Text = "Banana" };
             slide.Items.Add(p);
 
-            p = new ParagraphItem { Text = "Cherry" };
+            p = new LaTexParagraphItem { Text = "Cherry" };
             slide.Items.Add(p);
 
             return slide;
@@ -136,28 +137,28 @@ namespace Bodoconsult.Core.Latex.Test.Helpers
                 Title = title
             };
 
-            var p0 = new ParagraphItem { Text = "Fruits" };
+            var p0 = new LaTexParagraphItem { Text = "Fruits" };
             slide.Items.Add(p0);
 
-            var p = new ParagraphItem { Text = "Apple" };
+            var p = new LaTexParagraphItem { Text = "Apple" };
             p0.SubItems.Add(p);
 
-            p = new ParagraphItem { Text = "Banana" };
+            p = new LaTexParagraphItem { Text = "Banana" };
             p0.SubItems.Add(p);
 
-            p = new ParagraphItem { Text = "Cherry" };
+            p = new LaTexParagraphItem { Text = "Cherry" };
             p0.SubItems.Add(p);
 
-            p0 = new ParagraphItem { Text = "Vegetables" };
+            p0 = new LaTexParagraphItem { Text = "Vegetables" };
             slide.Items.Add(p0);
 
-            p = new ParagraphItem { Text = "Carrot" };
+            p = new LaTexParagraphItem { Text = "Carrot" };
             p0.SubItems.Add(p);
 
-            p = new ParagraphItem { Text = "Pepper" };
+            p = new LaTexParagraphItem { Text = "Pepper" };
             p0.SubItems.Add(p);
 
-            p = new ParagraphItem { Text = "Cauliflower" };
+            p = new LaTexParagraphItem { Text = "Cauliflower" };
             p0.SubItems.Add(p);
 
             return slide;
@@ -172,37 +173,40 @@ namespace Bodoconsult.Core.Latex.Test.Helpers
 
                 Debug.Print(slide.Title);
 
-                PrintParagraphs(slide.Items, "");
+                PrintItems(slide.Items, "");
 
             }
         }
 
 
 
-        public static void PrintParagraphs(IList<ILaTexItem> paragraphs, string indent)
+        public static void PrintItems(IList<ILaTexItem> items, string indent)
         {
 
-            foreach (var p in paragraphs)
-            {
+            var sortedItems = items.OrderBy(x => x.ShapePosition).ThenBy(x => x.SortId);
 
-                
+            foreach (var p in sortedItems)
+            {
 
                 if (p is ILaTexTextItem paragraph)
                 {
 
-                    Debug.Print(indent + p.Text);
+                    Debug.Print($"{indent}{p.Text} ({paragraph.ShapePosition}/{paragraph.SortId})");
 
-                    PrintParagraphs(paragraph.SubItems, indent + "    ");
+                    PrintItems(paragraph.SubItems, indent + "    ");
                 }
 
                 if (p is ILaTexImageItem imageItem)
                 {
-                    Debug.Print($"{indent}<Image>");
+                    Debug.Print($"{indent}<Image> ({imageItem.ShapePosition}/{imageItem.SortId})");
                 }
 
 
                 if (p is ILaTexTableItem tableItem)
                 {
+
+                    Debug.Print($"{indent}<Table> ({tableItem.ShapePosition}/{tableItem.SortId})");
+
                     var max0 = tableItem.TableData.GetLength(0) - 1;
                     var max1 = tableItem.TableData.GetLength(1) - 1;
 
@@ -216,10 +220,7 @@ namespace Bodoconsult.Core.Latex.Test.Helpers
                             Debug.Print($"{indent}{tableItem.TableData[rowIndex, colIndex]}  ");
                         }
                     }
-
-
                 }
-
             }
 
         }

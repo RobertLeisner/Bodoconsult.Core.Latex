@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Numerics;
 using Bodoconsult.Core.Latex.Interfaces;
 
 namespace Bodoconsult.Core.Latex.Model
@@ -7,7 +8,7 @@ namespace Bodoconsult.Core.Latex.Model
     /// <summary>
     /// Paragraph class for text paragraphs
     /// </summary>
-    public class ParagraphItem : ILaTexTextItem
+    public class LaTexParagraphItem : ILaTexTextItem
     {
 
         /// <summary>
@@ -19,6 +20,16 @@ namespace Bodoconsult.Core.Latex.Model
         /// Nested items
         /// </summary>
         public IList<ILaTexItem> SubItems { get; } = new List<ILaTexItem>();
+
+        /// <summary>
+        /// The sort order id the items follow up
+        /// </summary>
+        public int SortId { get; set; }
+
+        /// <summary>
+        /// The shape position of surrounding shape
+        /// </summary>
+        public long ShapePosition { get; set; }
 
         /// <summary>
         /// Indent level

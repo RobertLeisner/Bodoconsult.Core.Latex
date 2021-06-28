@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.IO;
+using System.Numerics;
 using Bodoconsult.Core.Latex.Enums;
 using Bodoconsult.Core.Latex.Interfaces;
 
@@ -8,7 +9,7 @@ namespace Bodoconsult.Core.Latex.Model
     /// <summary>
     /// Paragraph class for image paragraphs
     /// </summary>
-    public class ImageItem : ILaTexImageItem
+    public class LaTexImageItem : ILaTexImageItem
     {
 
         /// <summary>
@@ -20,6 +21,16 @@ namespace Bodoconsult.Core.Latex.Model
         /// Nested items
         /// </summary>
         public IList<ILaTexItem> SubItems { get; } = new List<ILaTexItem>();
+
+        /// <summary>
+        /// The sort order id the items follow up
+        /// </summary>
+        public int SortId { get; set; }
+
+        /// <summary>
+        /// The shape position of surrounding shape
+        /// </summary>
+        public long ShapePosition { get; set; }
 
 
         /// <summary>

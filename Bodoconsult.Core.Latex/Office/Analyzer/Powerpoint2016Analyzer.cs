@@ -65,6 +65,8 @@ namespace Bodoconsult.Core.Latex.Office.Analyzer
         private void AnalyseSlide(SlideId slideId)
         {
 
+            var _counter = 0;
+
             if (slideId.RelationshipId == null)
             {
                 return;
@@ -78,6 +80,8 @@ namespace Bodoconsult.Core.Latex.Office.Analyzer
             }
 
             var slide = (SlidePart)_presentationPart.GetPartById(relId);
+
+
 
             if (!IncludeHiddenSlides) //check if we got hidden slide, of so, skip
             {
@@ -130,11 +134,11 @@ namespace Bodoconsult.Core.Latex.Office.Analyzer
             var previndent = 1;
             //var firstitemdone = false;
 
-            IList<ParagraphItem> predecessors = new List<ParagraphItem>();
+            IList<LaTexParagraphItem> predecessors = new List<LaTexParagraphItem>();
             bool lStart = true;
 
 
-            var dummy = new ParagraphItem { Text = "Dummy", IndentLevel = 0 };
+            var dummy = new LaTexParagraphItem { Text = "Dummy", IndentLevel = 0 };
 
             predecessors.Add(dummy);
 
@@ -146,8 +150,42 @@ namespace Bodoconsult.Core.Latex.Office.Analyzer
                     continue;
                 }
 
+                var shape = paragraph.Ancestors<Shape>().FirstOrDefault();
 
-                var p = new ParagraphItem();
+                long pos = 0;
+
+                if (shape.ShapeProperties.Transform2D == null)
+                {
+
+                    var masterShapes = slide.SlideLayoutPart.SlideMasterPart.SlideMaster
+                        .Descendants<Shape>();
+
+                    var id = shape.NonVisualShapeProperties.NonVisualDrawingProperties.Id;
+
+
+                    var masterShape = masterShapes.FirstOrDefault(x =>
+                        x.NonVisualShapeProperties.NonVisualDrawingProperties.Id == id);
+
+                    pos = masterShape.ShapeProperties.Transform2D.Offset.Y.HasValue
+                        ? masterShape.ShapeProperties.Transform2D.Offset.Y.Value
+                        : 0;
+
+                }
+                else
+                {
+                    pos = shape.ShapeProperties.Transform2D.Offset.Y.HasValue
+                        ? shape.ShapeProperties.Transform2D.Offset.Y.Value 
+                        : 0;
+
+                }
+
+
+
+                var p = new LaTexParagraphItem
+                {
+                    ShapePosition = Convert.ToInt64(pos)
+                };
+
 
                 //http://msdn.microsoft.com/en-us/library/ee922775(v=office.14).aspx
                 var currentIndentLevel = 1;
@@ -184,6 +222,8 @@ namespace Bodoconsult.Core.Latex.Office.Analyzer
                     p.Text = paragraphText.ToString();
                     p.IndentLevel = currentIndentLevel - 1;
 
+                    p.SortId = _counter;
+
                     //Debug.WriteLine($"{paragraphText} {previndent} {currentIndentLevel} {predecessors.Count}  => {master.Text}");
 
                 }
@@ -217,6 +257,7 @@ namespace Bodoconsult.Core.Latex.Office.Analyzer
                 }
 
                 previndent = currentIndentLevel;
+                _counter++;
 
             }
 
@@ -227,25 +268,30 @@ namespace Bodoconsult.Core.Latex.Office.Analyzer
 
 
             //Get all the images!!! 
-            foreach (var pic in slide.Slide.Descendants< DocumentFormat.OpenXml.Presentation.Picture >())
+            foreach (var pic in slide.Slide.Descendants<DocumentFormat.OpenXml.Presentation.Picture>())
             {
                 try
                 {
 
-                    
+                    var pos = pic.ShapeProperties.Transform2D.Offset.Y.HasValue ?
+                        pic.ShapeProperties.Transform2D.Offset.Y.Value :
+                        0;
+
                     //Extract correct image part and extenion
                     var imagePart = ExtractImage(pic, slide, out var extension);
 
-                    var imageItem = new ImageItem
+                    var imageItem = new LaTexImageItem
                     {
                         ImageData = imagePart.GetStream(),
                         ImageType = extension == "png" ? LaTexImageType.Png : LaTexImageType.Jpg,
+                        SortId = _counter,
+                        ShapePosition = Convert.ToInt64(pos),
                     };
 
                     slideMetaData.Items.Add(imageItem);
-
+                    _counter++;
                 }
-                catch 
+                catch
                 {
                     Console.WriteLine("Error with an image");
                 }
@@ -255,7 +301,11 @@ namespace Bodoconsult.Core.Latex.Office.Analyzer
             foreach (var table in slide.Slide.Descendants<Table>())
             {
 
+                var shape = table.Ancestors<Shape>().FirstOrDefault();
 
+                var pos = shape == null ? 0 : shape.ShapeProperties.Transform2D.Offset.Y.HasValue ?
+                    shape.ShapeProperties.Transform2D.Offset.Y.Value :
+                    0;
 
                 var grid = table.TableGrid;
 
@@ -281,7 +331,7 @@ namespace Bodoconsult.Core.Latex.Office.Analyzer
                         var paras = cell.TextBody.Descendants<Paragraph>();
                         foreach (var para in paras)
                         {
-                            
+
                             // Iterate through the lines of the paragraph.
                             foreach (var text in para.Descendants<DocumentFormat.OpenXml.Drawing.Text>())
                             {
@@ -301,11 +351,13 @@ namespace Bodoconsult.Core.Latex.Office.Analyzer
 
                 var tableItem = new LaTextTableItem
                 {
-                    TableData = data
+                    TableData = data,
+                    SortId = _counter,
+                    ShapePosition = pos,
                 };
 
                 slideMetaData.Items.Add(tableItem);
-
+                _counter++;
             }
         }
 

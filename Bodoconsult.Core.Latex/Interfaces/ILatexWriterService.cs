@@ -50,13 +50,28 @@ namespace Bodoconsult.Core.Latex.Interfaces
 
 
         /// <summary>
-        /// Adds a paragraph to output file (LaTex: itemize) with indent level 0
+        /// Adds a paragraph to output file with indent level 0. Sub items are added as list (LaTex: itemize)
+        /// </summary>
+        /// <param name="item">Item to write as a paragraph</param>
+        void AddParagraph(ILaTexItem item);
+
+        /// <summary>
+        /// Adds a paragraph to output file. Sub items are added as list (LaTex: itemize)
+        /// </summary>
+        /// <param name="item">Item to write as list</param>
+        /// <param name="indentLevel">Indent level</param>
+        void AddParagraph(ILaTexItem item, int indentLevel);
+
+
+
+        /// <summary>
+        /// Adds a paragraph to output file with indent level 0. Sub items are added as list (LaTex: itemize)
         /// </summary>
         /// <param name="items">Items to write as list</param>
         void AddParagraph(IList<ILaTexItem> items);
 
         /// <summary>
-        /// Adds a paragraph to output file (LaTex: itemize)
+        /// Adds a paragraph to output file with indent level 0 Sub items are added as list (LaTex: itemize)
         /// </summary>
         /// <param name="items">Items to write as list</param>
         /// <param name="indentLevel">Indent level</param>

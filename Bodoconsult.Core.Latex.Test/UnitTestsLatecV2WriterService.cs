@@ -53,7 +53,7 @@ namespace Bodoconsult.Core.Latex.Test
 
             // Arrange
 
-            var p = new ParagraphItem { Text = "Test" };
+            var p = new LaTexParagraphItem { Text = "Test" };
 
             _service.AddSection(p);
 
@@ -72,7 +72,7 @@ namespace Bodoconsult.Core.Latex.Test
         {
 
             // Arrange
-            var p = new ParagraphItem { Text = "Test" };
+            var p = new LaTexParagraphItem { Text = "Test" };
 
             // Act
             _service.AddSection(p);
@@ -92,7 +92,7 @@ namespace Bodoconsult.Core.Latex.Test
         {
 
             // Arrange
-            var p = new ParagraphItem { Text = "Test" };
+            var p = new LaTexParagraphItem { Text = "Test" };
 
             // Act
             _service.AddSubSection(p);
@@ -112,7 +112,7 @@ namespace Bodoconsult.Core.Latex.Test
         {
 
             // Arrange
-            var p = new ParagraphItem { Text = "Test" };
+            var p = new LaTexParagraphItem { Text = "Test" };
 
             // Act
             _service.AddSubSubSection(p);
@@ -134,19 +134,19 @@ namespace Bodoconsult.Core.Latex.Test
             // Arrange
             IList<ILaTexItem> items = new List<ILaTexItem>();
 
-            var p = new ParagraphItem
+            var p = new LaTexParagraphItem
             {
                 Text = "Apple"
             };
             items.Add(p);
 
-            p = new ParagraphItem
+            p = new LaTexParagraphItem
             {
                 Text = "Banana"
             };
             items.Add(p);
 
-            p = new ParagraphItem
+            p = new LaTexParagraphItem
             {
                 Text = "Cherry"
             };
@@ -180,51 +180,51 @@ namespace Bodoconsult.Core.Latex.Test
             // Arrange
             IList<ILaTexItem> items = new List<ILaTexItem>();
 
-            var p = new ParagraphItem
+            var p = new LaTexParagraphItem
             {
                 Text = "Fruits"
             };
             items.Add(p);
 
-            var subp = new ParagraphItem
+            var subp = new LaTexParagraphItem
             {
                 Text = "Apple"
             };
 
             p.SubItems.Add(subp);
 
-            subp = new ParagraphItem
+            subp = new LaTexParagraphItem
             {
                 Text = "Banana"
             };
             p.SubItems.Add(subp);
 
-            subp = new ParagraphItem
+            subp = new LaTexParagraphItem
             {
                 Text = "Cherry"
             };
             p.SubItems.Add(subp);
 
-            p = new ParagraphItem
+            p = new LaTexParagraphItem
             {
                 Text = "Vegetables"
             };
             items.Add(p);
 
-            subp = new ParagraphItem
+            subp = new LaTexParagraphItem
             {
                 Text = "Carrot"
             };
 
             p.SubItems.Add(subp);
 
-            subp = new ParagraphItem
+            subp = new LaTexParagraphItem
             {
                 Text = "Pepper"
             };
             p.SubItems.Add(subp);
 
-            subp = new ParagraphItem
+            subp = new LaTexParagraphItem
             {
                 Text = "Cauliflower"
             };
@@ -262,19 +262,19 @@ namespace Bodoconsult.Core.Latex.Test
             // Arrange
             IList<ILaTexItem> items = new List<ILaTexItem>();
 
-            var p = new ParagraphItem
+            var p = new LaTexParagraphItem
             {
                 Text = "Apple"
             };
             items.Add(p);
 
-            p = new ParagraphItem
+            p = new LaTexParagraphItem
             {
                 Text = "Banana"
             };
             items.Add(p);
 
-            p = new ParagraphItem
+            p = new LaTexParagraphItem
             {
                 Text = "Cherry"
             };
@@ -308,51 +308,51 @@ namespace Bodoconsult.Core.Latex.Test
             // Arrange
             IList<ILaTexItem> items = new List<ILaTexItem>();
 
-            var p = new ParagraphItem
+            var p = new LaTexParagraphItem
             {
                 Text = "Fruits"
             };
             items.Add(p);
 
-            var subp = new ParagraphItem
+            var subp = new LaTexParagraphItem
             {
                 Text = "Apple"
             };
 
             p.SubItems.Add(subp);
 
-            subp = new ParagraphItem
+            subp = new LaTexParagraphItem
             {
                 Text = "Banana"
             };
             p.SubItems.Add(subp);
 
-            subp = new ParagraphItem
+            subp = new LaTexParagraphItem
             {
                 Text = "Cherry"
             };
             p.SubItems.Add(subp);
 
-            p = new ParagraphItem
+            p = new LaTexParagraphItem
             {
                 Text = "Vegetables"
             };
             items.Add(p);
 
-            subp = new ParagraphItem
+            subp = new LaTexParagraphItem
             {
                 Text = "Carrot"
             };
 
             p.SubItems.Add(subp);
 
-            subp = new ParagraphItem
+            subp = new LaTexParagraphItem
             {
                 Text = "Pepper"
             };
             p.SubItems.Add(subp);
 
-            subp = new ParagraphItem
+            subp = new LaTexParagraphItem
             {
                 Text = "Cauliflower"
             };
@@ -394,7 +394,7 @@ namespace Bodoconsult.Core.Latex.Test
 
             var ms = new MemoryStream(buffer);
 
-            var imageItem = new ImageItem
+            var imageItem = new LaTexImageItem
             {
                 Text = "Test",
                 ImageData = ms,
@@ -424,51 +424,51 @@ namespace Bodoconsult.Core.Latex.Test
             // Arrange
             IList<ILaTexItem> items = new List<ILaTexItem>();
 
-            var p = new ParagraphItem
+            var p = new LaTexParagraphItem
             {
                 Text = "Fruits"
             };
             items.Add(p);
 
-            var subp = new ParagraphItem
+            var subp = new LaTexParagraphItem
             {
                 Text = "Apple"
             };
 
             p.SubItems.Add(subp);
 
-            subp = new ParagraphItem
+            subp = new LaTexParagraphItem
             {
                 Text = "Banana"
             };
             p.SubItems.Add(subp);
 
-            subp = new ParagraphItem
+            subp = new LaTexParagraphItem
             {
                 Text = "Cherry"
             };
             p.SubItems.Add(subp);
 
-            p = new ParagraphItem
+            p = new LaTexParagraphItem
             {
                 Text = "Vegetables"
             };
             items.Add(p);
 
-            subp = new ParagraphItem
+            subp = new LaTexParagraphItem
             {
                 Text = "Carrot"
             };
 
             p.SubItems.Add(subp);
 
-            subp = new ParagraphItem
+            subp = new LaTexParagraphItem
             {
                 Text = "Pepper"
             };
             p.SubItems.Add(subp);
 
-            subp = new ParagraphItem
+            subp = new LaTexParagraphItem
             {
                 Text = "Cauliflower"
             };

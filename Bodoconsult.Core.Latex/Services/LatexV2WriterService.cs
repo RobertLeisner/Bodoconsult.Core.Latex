@@ -106,20 +106,47 @@ namespace Bodoconsult.Core.Latex.Services
         /// <param name="section">Sub sub section data</param>
         public void AddSubSubSection(ILaTexTextItem section)
         {
-
             var s = LaTexHelper.Escape(section.Text);
 
             WriteWithIndent($@"\subsubsection[{s}]{{{s}}}", section.IndentLevel);
             _content.AppendLine("");
         }
 
+        /// <summary>
+        /// Adds a paragraph to output file with indent level 0. Sub items are added as list (LaTex: itemize)
+        /// </summary>
+        /// <param name="item">Item to write as a paragraph</param>
+        public void AddParagraph(ILaTexItem item)
+        {
+            AddParagraph(item, 0);
+        }
+
+        /// <summary>
+        /// Adds a paragraph to output file. Sub items are added as list (LaTex: itemize)
+        /// </summary>
+        /// <param name="item">Item to write as list</param>
+        /// <param name="indentLevel">Indent level</param>
+        public void AddParagraph(ILaTexItem item, int indentLevel)
+        {
+            WriteWithIndent(LaTexHelper.Escape(item.Text), indentLevel);
+            AddList(item.SubItems, indentLevel + 1);
+        }
 
 
+        /// <summary>
+        /// Adds a paragraph to output file with indent level 0. Sub items are added as list (LaTex: itemize)
+        /// </summary>
+        /// <param name="items">Items to write as list</param>
         public void AddParagraph(IList<ILaTexItem> items)
         {
             AddParagraph(items, 0);
         }
 
+        /// <summary>
+        /// Adds a paragraph to output file with indent level 0 Sub items are added as list (LaTex: itemize)
+        /// </summary>
+        /// <param name="items">Items to write as list</param>
+        /// <param name="indentLevel">Indent level</param>
         public void AddParagraph(IList<ILaTexItem> items, int indentLevel)
         {
 
