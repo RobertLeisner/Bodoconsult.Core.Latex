@@ -11,7 +11,6 @@ using System.Text;
 using Bodoconsult.Core.Latex.Enums;
 using Bodoconsult.Core.Latex.Helpers;
 using Bodoconsult.Core.Latex.Interfaces;
-using DocumentFormat.OpenXml.Drawing.Diagrams;
 
 namespace Bodoconsult.Core.Latex.Services
 {
@@ -271,8 +270,8 @@ namespace Bodoconsult.Core.Latex.Services
             var target = Path.Combine(ImageDirectory, imageFilename);
 
 
-            try
-            {
+            //try
+            //{
 
                 var img = System.Drawing.Image.FromStream(imageItem.ImageData);
 
@@ -282,12 +281,12 @@ namespace Bodoconsult.Core.Latex.Services
                 }
                 img.Save(target);
                 img.Dispose();
-            }
-            catch
-            {
-                _imageCounter--;
-                return null;
-            }
+            //}
+            //catch
+            //{
+            //    _imageCounter--;
+            //    return null;
+            //}
 
             _content.AppendLine(@"\begin{figure}[h] \begin{center}");
             _content.AppendLine($"\t\\includegraphics[width=\\textwidth]{{{ImagesFolderName}//{imageFilename}}}");

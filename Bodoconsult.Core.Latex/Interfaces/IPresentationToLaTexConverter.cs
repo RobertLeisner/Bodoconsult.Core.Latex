@@ -33,4 +33,5 @@ namespace Bodoconsult.Core.Latex.Interfaces
         string Convert();
 
     }
+
 }

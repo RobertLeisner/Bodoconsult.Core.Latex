@@ -21,7 +21,8 @@
                     .Replace("ü", "\\\"u")
                     .Replace("ä", "\\\"a")
                     .Replace("ö", "\\\"o")
-                    .Replace("ß", "{\\ss}");
+                    .Replace("ß", "{\\ss}")
+                    .Replace("#", "\\#");
         }
 
 

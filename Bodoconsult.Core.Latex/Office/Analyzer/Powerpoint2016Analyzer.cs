@@ -2,15 +2,18 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.IO.Compression;
 using System.Linq;
 using System.Text;
 using Bodoconsult.Core.Latex.Enums;
+using Bodoconsult.Core.Latex.Helpers;
 using Bodoconsult.Core.Latex.Interfaces;
 using Bodoconsult.Core.Latex.Model;
 using DocumentFormat.OpenXml;
 using DocumentFormat.OpenXml.Drawing;
 using DocumentFormat.OpenXml.Packaging;
 using DocumentFormat.OpenXml.Presentation;
+using Path = DocumentFormat.OpenXml.Drawing.Path;
 using Shape = DocumentFormat.OpenXml.Presentation.Shape;
 
 namespace Bodoconsult.Core.Latex.Office.Analyzer
@@ -28,12 +31,35 @@ namespace Bodoconsult.Core.Latex.Office.Analyzer
 
         private readonly PresentationMetaData _presentationMetaData;
 
+        private const string TempPath = @"D:\Temp";
+
+        private string BaseDir;
+
+        private string ImageDir;
+
         /// <summary>
         /// Default ctor
         /// </summary>
         /// <param name="sourceFileName">The path to the presentation</param>
         public Powerpoint2016Analyzer(string sourceFileName)
         {
+
+            var fi = new FileInfo(sourceFileName);
+
+            BaseDir = System.IO.Path.Combine(TempPath, fi.Name.Replace(fi.Extension, ""));
+
+            if (Directory.Exists(BaseDir))
+            {
+                Directory.Delete(BaseDir, true);
+            }
+
+            ZipFile.ExtractToDirectory(sourceFileName, BaseDir);
+
+
+
+            ImageDir = System.IO.Path.Combine(BaseDir, "ppt", "media");
+
+
             _presentationMetaData = new PresentationMetaData(sourceFileName);
 
             _presentationDocument = PresentationDocument.Open(sourceFileName, false);
@@ -131,11 +157,16 @@ namespace Bodoconsult.Core.Latex.Office.Analyzer
             PresentationMetaData.Slides.Add(slideMetaData);
 
 
+
+
             var previndent = 1;
             //var firstitemdone = false;
 
             IList<LaTexParagraphItem> predecessors = new List<LaTexParagraphItem>();
-            bool lStart = true;
+            var lStart = true;
+
+            var masterShapes = slide.SlideLayoutPart.SlideMasterPart.SlideMaster
+                .Descendants<Shape>();
 
 
             var dummy = new LaTexParagraphItem { Text = "Dummy", IndentLevel = 0 };
@@ -157,8 +188,6 @@ namespace Bodoconsult.Core.Latex.Office.Analyzer
                 if (shape.ShapeProperties.Transform2D == null)
                 {
 
-                    var masterShapes = slide.SlideLayoutPart.SlideMasterPart.SlideMaster
-                        .Descendants<Shape>();
 
                     var id = shape.NonVisualShapeProperties.NonVisualDrawingProperties.Id;
 
@@ -166,15 +195,21 @@ namespace Bodoconsult.Core.Latex.Office.Analyzer
                     var masterShape = masterShapes.FirstOrDefault(x =>
                         x.NonVisualShapeProperties.NonVisualDrawingProperties.Id == id);
 
-                    pos = masterShape.ShapeProperties.Transform2D.Offset.Y.HasValue
-                        ? masterShape.ShapeProperties.Transform2D.Offset.Y.Value
-                        : 0;
-
+                    if (masterShape == null)
+                    {
+                        pos = 0;
+                    }
+                    else
+                    {
+                        pos = masterShape.ShapeProperties.Transform2D.Offset.Y.HasValue
+                            ? masterShape.ShapeProperties.Transform2D.Offset.Y.Value
+                            : 0;
+                    }
                 }
                 else
                 {
                     pos = shape.ShapeProperties.Transform2D.Offset.Y.HasValue
-                        ? shape.ShapeProperties.Transform2D.Offset.Y.Value 
+                        ? shape.ShapeProperties.Transform2D.Offset.Y.Value
                         : 0;
 
                 }
@@ -214,7 +249,17 @@ namespace Bodoconsult.Core.Latex.Office.Analyzer
                     paragraphText.Append(text.Text);
                 }
 
-                var master = predecessors[currentIndentLevel - 1];
+
+
+                var index = currentIndentLevel - 1;
+
+                if (index > predecessors.Count - 1)
+                {
+                    index = predecessors.Count - 1;
+
+                }
+
+                var master = predecessors[index];
                 master.SubItems.Add(p);
 
                 if (paragraphText.Length > 0)
@@ -270,31 +315,44 @@ namespace Bodoconsult.Core.Latex.Office.Analyzer
             //Get all the images!!! 
             foreach (var pic in slide.Slide.Descendants<DocumentFormat.OpenXml.Presentation.Picture>())
             {
-                try
+                //try
+                //{
+
+                var pos = pic.ShapeProperties.Transform2D.Offset.Y.HasValue ?
+                    pic.ShapeProperties.Transform2D.Offset.Y.Value :
+                    0;
+
+                //Extract correct image part and extenion
+                var imagePart = ExtractImage(pic, slide, out var extension);
+
+                var imageItem = new LaTexImageItem
+                {
+                    SortId = _counter,
+                    ShapePosition = Convert.ToInt64(pos),
+                };
+
+                switch (extension.ToLower())
                 {
 
-                    var pos = pic.ShapeProperties.Transform2D.Offset.Y.HasValue ?
-                        pic.ShapeProperties.Transform2D.Offset.Y.Value :
-                        0;
+                    case "emf":
 
-                    //Extract correct image part and extenion
-                    var imagePart = ExtractImage(pic, slide, out var extension);
-
-                    var imageItem = new LaTexImageItem
-                    {
-                        ImageData = imagePart.GetStream(),
-                        ImageType = extension == "png" ? LaTexImageType.Png : LaTexImageType.Jpg,
-                        SortId = _counter,
-                        ShapePosition = Convert.ToInt64(pos),
-                    };
-
-                    slideMetaData.Items.Add(imageItem);
-                    _counter++;
+                        var fiName = System.IO.Path.Combine(ImageDir, new FileInfo(imagePart.Uri.OriginalString).Name);
+                        imageItem.ImageData = ImageHelper.SaveMetaFile(fiName);
+                        imageItem.ImageType = LaTexImageType.Jpg;
+                        break;
+                    default:
+                        imageItem.ImageData = imagePart.GetStream();
+                        imageItem.ImageType = extension == "png" ? LaTexImageType.Png : LaTexImageType.Jpg;
+                        break;
                 }
-                catch
-                {
-                    Console.WriteLine("Error with an image");
-                }
+
+                slideMetaData.Items.Add(imageItem);
+                _counter++;
+                //}
+                //catch
+                //{
+                //    Console.WriteLine("Error with an image");
+                //}
             }
 
             //Get all the images!!! 
@@ -436,17 +494,24 @@ namespace Bodoconsult.Core.Latex.Office.Analyzer
         private static ImagePart ExtractImage(DocumentFormat.OpenXml.Presentation.Picture pic, SlidePart slide, out string extension)
         {
             // First, get relationship id of image
-            string rId = pic.BlipFill.Blip.Embed.Value;
+            var rId = pic.BlipFill.Blip.Embed.Value;
 
-            ImagePart imagePart = (ImagePart)slide.GetPartById(rId);
+            var imagePart = (ImagePart)slide.GetPartById(rId);
 
             // Get the original file name.
             Debug.WriteLine("$$Image:" + imagePart.Uri.OriginalString);
-            extension = "bmp";
+            extension = "emf";
+
+
             if (imagePart.ContentType.Contains("jpeg") || imagePart.ContentType.Contains("jpg"))
+            {
                 extension = "jpg";
+            }
             else if (imagePart.ContentType.Contains("png"))
+            {
                 extension = "png";
+            }
+
             return imagePart;
         }
 
@@ -458,6 +523,11 @@ namespace Bodoconsult.Core.Latex.Office.Analyzer
 
         public void Dispose()
         {
+            if (Directory.Exists(BaseDir))
+            {
+                Directory.Delete(BaseDir, true);
+            }
+
             _presentationDocument?.Dispose();
         }
     }

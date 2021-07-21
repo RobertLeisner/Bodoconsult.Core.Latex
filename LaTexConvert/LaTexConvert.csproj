@@ -1,0 +1,13 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net5.0-windows</TargetFramework>
+    <UseWindowsForms>true</UseWindowsForms>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Bodoconsult.Core.Latex\Bodoconsult.Core.Latex.csproj" />
+    <ProjectReference Include="..\LaTexConvert.Business\LaTexConvert.Business.csproj" />
+  </ItemGroup>
+
+</Project>

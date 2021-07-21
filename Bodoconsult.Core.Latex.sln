@@ -3,9 +3,15 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.31205.134
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Bodoconsult.Core.Latex", "Bodoconsult.Core.Latex\Bodoconsult.Core.Latex.csproj", "{570993E3-CBBE-4438-8BCF-703E1C47AB6E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Bodoconsult.Core.Latex", "Bodoconsult.Core.Latex\Bodoconsult.Core.Latex.csproj", "{570993E3-CBBE-4438-8BCF-703E1C47AB6E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Bodoconsult.Core.Latex.Test", "Bodoconsult.Core.Latex.Test\Bodoconsult.Core.Latex.Test.csproj", "{B99E52FB-7479-4591-92EA-9DFF3ADCD3FF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Bodoconsult.Core.Latex.Test", "Bodoconsult.Core.Latex.Test\Bodoconsult.Core.Latex.Test.csproj", "{B99E52FB-7479-4591-92EA-9DFF3ADCD3FF}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LaTexConvert.Business", "LaTexConvert.Business\LaTexConvert.Business.csproj", "{ADC7F7D7-3D67-4AF0-9434-172367090BCA}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LaTexConvert.Business.Test", "LaTexConvert.Business.Test\LaTexConvert.Business.Test.csproj", "{9B58FD57-3CC8-4BE6-8EAC-FE466223E9F4}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LaTexConvert", "LaTexConvert\LaTexConvert.csproj", "{BE439862-D83B-4216-8A7A-75373B9377A8}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,6 +27,18 @@ Global
 		{B99E52FB-7479-4591-92EA-9DFF3ADCD3FF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B99E52FB-7479-4591-92EA-9DFF3ADCD3FF}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B99E52FB-7479-4591-92EA-9DFF3ADCD3FF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{ADC7F7D7-3D67-4AF0-9434-172367090BCA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{ADC7F7D7-3D67-4AF0-9434-172367090BCA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{ADC7F7D7-3D67-4AF0-9434-172367090BCA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{ADC7F7D7-3D67-4AF0-9434-172367090BCA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9B58FD57-3CC8-4BE6-8EAC-FE466223E9F4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9B58FD57-3CC8-4BE6-8EAC-FE466223E9F4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9B58FD57-3CC8-4BE6-8EAC-FE466223E9F4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9B58FD57-3CC8-4BE6-8EAC-FE466223E9F4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BE439862-D83B-4216-8A7A-75373B9377A8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BE439862-D83B-4216-8A7A-75373B9377A8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BE439862-D83B-4216-8A7A-75373B9377A8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BE439862-D83B-4216-8A7A-75373B9377A8}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

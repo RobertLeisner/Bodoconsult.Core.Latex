@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Numerics;
 using Bodoconsult.Core.Latex.Interfaces;
 
 namespace Bodoconsult.Core.Latex.Model
