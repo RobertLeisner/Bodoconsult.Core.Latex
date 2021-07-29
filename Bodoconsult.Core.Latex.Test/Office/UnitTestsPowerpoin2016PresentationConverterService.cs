@@ -14,8 +14,8 @@ namespace Bodoconsult.Core.Latex.Test.Office
             // Arrange
             Job = new PresentationJob
             {
-                PresentationFilePath = @"D:\Daten\Projekte\Customer\Royotech\Presentations\BarcodeParser.pptx",
-                LaTexFilePath = @"D:\Daten\Projekte\Customer\Royotech\Presentations\LaTex\StSysBarcodeParser.tex"
+                PresentationFilePath = @"D:\Daten\Projekte\Customer\Royotech\Presentations\Overview_Datalayer.pptx",
+                LaTexFilePath = @"D:\Daten\Projekte\Customer\Royotech\Presentations\LaTex\StSysDatalayer.tex"
             };
 
             if (File.Exists(Job.LaTexFilePath))

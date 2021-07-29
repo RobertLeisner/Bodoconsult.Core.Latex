@@ -13,7 +13,6 @@ using DocumentFormat.OpenXml;
 using DocumentFormat.OpenXml.Drawing;
 using DocumentFormat.OpenXml.Packaging;
 using DocumentFormat.OpenXml.Presentation;
-using Path = DocumentFormat.OpenXml.Drawing.Path;
 using Shape = DocumentFormat.OpenXml.Presentation.Shape;
 
 namespace Bodoconsult.Core.Latex.Office.Analyzer
@@ -33,9 +32,9 @@ namespace Bodoconsult.Core.Latex.Office.Analyzer
 
         private const string TempPath = @"D:\Temp";
 
-        private string BaseDir;
+        private readonly string _baseDir;
 
-        private string ImageDir;
+        private readonly string _imageDir;
 
         /// <summary>
         /// Default ctor
@@ -46,18 +45,16 @@ namespace Bodoconsult.Core.Latex.Office.Analyzer
 
             var fi = new FileInfo(sourceFileName);
 
-            BaseDir = System.IO.Path.Combine(TempPath, fi.Name.Replace(fi.Extension, ""));
+            _baseDir = System.IO.Path.Combine(TempPath, fi.Name.Replace(fi.Extension, ""));
 
-            if (Directory.Exists(BaseDir))
+            if (Directory.Exists(_baseDir))
             {
-                Directory.Delete(BaseDir, true);
+                Directory.Delete(_baseDir, true);
             }
 
-            ZipFile.ExtractToDirectory(sourceFileName, BaseDir);
+            ZipFile.ExtractToDirectory(sourceFileName, _baseDir);
 
-
-
-            ImageDir = System.IO.Path.Combine(BaseDir, "ppt", "media");
+            _imageDir = System.IO.Path.Combine(_baseDir, "ppt", "media");
 
 
             _presentationMetaData = new PresentationMetaData(sourceFileName);
@@ -336,7 +333,7 @@ namespace Bodoconsult.Core.Latex.Office.Analyzer
 
                     case "emf":
 
-                        var fiName = System.IO.Path.Combine(ImageDir, new FileInfo(imagePart.Uri.OriginalString).Name);
+                        var fiName = System.IO.Path.Combine(_imageDir, new FileInfo(imagePart.Uri.OriginalString).Name);
                         imageItem.ImageData = ImageHelper.SaveMetaFile(fiName);
                         imageItem.ImageType = LaTexImageType.Jpg;
                         break;
@@ -523,9 +520,9 @@ namespace Bodoconsult.Core.Latex.Office.Analyzer
 
         public void Dispose()
         {
-            if (Directory.Exists(BaseDir))
+            if (Directory.Exists(_baseDir))
             {
-                Directory.Delete(BaseDir, true);
+                Directory.Delete(_baseDir, true);
             }
 
             _presentationDocument?.Dispose();
